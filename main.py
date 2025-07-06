@@ -15,7 +15,13 @@ pandas_dtypes = {
 for i in range(1, 44):
     pandas_dtypes[f'var_{i}'] = 'float64'
 for i in range(44, 51):
-    pandas_dtypes[f'var_{i}'] = 'int64'
+    col = f'var_{i}'
+    if col in df.columns:
+        df[col] = df[col].astype(str).str.strip().str.lower()
+        df[col] = df[col].replace({'true': 1, 'false': 0, 'nan': np.nan})
+        df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
+    pandas_dtypes[col] = 'int64'
+
 
 # Step 3: Apply data type conversions safely
 for col, dtype in pandas_dtypes.items():
